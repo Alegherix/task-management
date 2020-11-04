@@ -1,0 +1,25 @@
+import { BadRequestException, PipeTransform } from '@nestjs/common';
+import { TaskStatus } from '../task.model';
+
+export class TaskStatusValidationPipe implements PipeTransform {
+  readonly allowedStatuses = [
+    TaskStatus.OPEN,
+    TaskStatus.IN_PROGRESS,
+    TaskStatus.DONE,
+  ];
+
+  transform(value: any) {
+    value = value.toUpperCase();
+
+    if (!this.isStatusValid(value)) {
+      throw new BadRequestException(`"${value} is an invalid status`);
+    }
+
+    return value;
+  }
+
+  // If status is not -1, meaning it exists in allowedStatuses, then it's a valid status.
+  private isStatusValid(status: any): boolean {
+    return this.allowedStatuses.indexOf(status) !== -1;
+  }
+}
