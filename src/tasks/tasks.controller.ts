@@ -3,10 +3,13 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Patch,
   Post,
   Query,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.tdo';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
@@ -28,7 +31,13 @@ export class TasksController {
 
   @Get('/:id')
   getTaskById(@Param('id') id: string): Task {
-    return this.tasksService.getTaskById(id);
+    const task = this.tasksService.getTaskById(id);
+
+    if (!task) {
+      throw new NotFoundException();
+    }
+
+    return task;
   }
 
   @Delete('/:id')
@@ -37,6 +46,9 @@ export class TasksController {
   }
 
   @Post()
+  // ValidationPipen kommer ta emot hela request bodyn som använder en DTO och validera den inkommande datan mot DTO'n med hjälp
+  // av classValidator decoratorsen
+  @UsePipes(ValidationPipe)
   createTask(@Body() createTaskDto: CreateTaskDto): Task {
     return this.tasksService.createTask(createTaskDto);
   }
