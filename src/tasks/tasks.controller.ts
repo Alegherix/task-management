@@ -35,10 +35,10 @@ export class TasksController {
     return this.tasksService.getTaskById(id);
   }
 
-  // @Delete('/:id')
-  // deleteTaskById(@Param('id') id: string): void {
-  //   this.tasksService.deleteTaskById(id);
-  // }
+  @Delete('/:id')
+  deleteTaskById(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.tasksService.deleteTaskById(id);
+  }
 
   @Post()
   // ValidationPipen kommer ta emot hela request bodyn som använder en DTO och validera den inkommande datan mot DTO'n med hjälp
